@@ -78,6 +78,13 @@ const PortScanner = () => {
     8080: "HTTP Alternate",
   };
 
+  const updateScanMethod = (method: string) => {
+    setError("");
+    setResults([]);
+    setProgress(0);
+    setResults([]);
+  };
+
   const validateInput = () => {
     // Basic IP range validation
     const ipPattern = /^(\d{1,3}\.){3}\d{1,3}(-(\d{1,3}\.){3}\d{1,3})?$/;
@@ -206,7 +213,7 @@ const PortScanner = () => {
               <select
                 className="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500"
                 value={scanMethod}
-                onChange={(e) => setScanMethod(e.target.value)}
+                onChange={(e) => updateScanMethod(e.target.value)}
               >
                 <option value="tcp">TCP Connect Scan</option>
                 <option value="udp">UDP Scan</option>
