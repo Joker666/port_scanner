@@ -1,7 +1,36 @@
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { AlertTriangle, Info, Server, Shield } from "lucide-react";
+import { AlertTriangle, Info, Loader, Server, Shield } from "lucide-react";
 import { useState } from "react";
+
+// Spinner Component
+const LoadingSpinner = () => (
+  <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div className="bg-white p-6 rounded-lg shadow-xl flex flex-col items-center">
+      <div className="animate-spin">
+        <Loader className="h-8 w-8 text-blue-500" />
+      </div>
+      <div className="mt-4 text-lg font-medium">Scanning Ports...</div>
+      <div className="text-sm text-gray-500 mt-2">
+        This may take a few moments
+      </div>
+      <div className="flex space-x-1 mt-3">
+        <div
+          className="w-2 h-2 bg-blue-500 rounded-full animate-bounce"
+          style={{ animationDelay: "0s" }}
+        ></div>
+        <div
+          className="w-2 h-2 bg-blue-500 rounded-full animate-bounce"
+          style={{ animationDelay: "0.2s" }}
+        ></div>
+        <div
+          className="w-2 h-2 bg-blue-500 rounded-full animate-bounce"
+          style={{ animationDelay: "0.4s" }}
+        ></div>
+      </div>
+    </div>
+  </div>
+);
 
 const PortScanner = () => {
   const [ipRange, setIpRange] = useState("");
@@ -11,6 +40,7 @@ const PortScanner = () => {
   const [results, setResults] = useState([]);
   const [error, setError] = useState("");
   const [showMethodInfo, setShowMethodInfo] = useState(false);
+  const [progress, setProgress] = useState(0);
 
   const scanMethods: { [key: string]: { name: string; description: string } } =
     {
@@ -30,6 +60,7 @@ const PortScanner = () => {
           "Sends SYN packets without completing handshake. Stealthier but requires privileges.",
       },
     };
+
   // Common service port mappings
   const commonPorts = {
     20: "FTP (Data)",
@@ -73,6 +104,7 @@ const PortScanner = () => {
     setScanning(true);
     setError("");
     setResults([]);
+    setProgress(0);
 
     // Simulate different results based on scan method
     const sampleResults = {
@@ -92,15 +124,30 @@ const PortScanner = () => {
       ],
     };
 
+    // Simulate scanning progress
+    const progressInterval = setInterval(() => {
+      setProgress((prev) => {
+        if (prev >= 90) {
+          clearInterval(progressInterval);
+          return 90;
+        }
+        return prev + Math.random() * 20;
+      });
+    }, 500);
+
     // Simulate scanning delay
     setTimeout(() => {
+      clearInterval(progressInterval);
+      setProgress(100);
       setResults(sampleResults[scanMethod]);
       setScanning(false);
-    }, 2000);
+    }, 3000);
   };
 
   return (
     <div className="max-w-4xl mx-auto p-4">
+      {scanning && <LoadingSpinner />}
+
       <Card className="mb-6">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
@@ -199,6 +246,15 @@ const PortScanner = () => {
             >
               {scanning ? "Scanning..." : "Start Scan"}
             </button>
+
+            {scanning && (
+              <div className="w-full bg-gray-200 rounded-full h-2.5 mt-2">
+                <div
+                  className="bg-blue-500 h-2.5 rounded-full transition-all duration-300 ease-in-out"
+                  style={{ width: `${progress}%` }}
+                ></div>
+              </div>
+            )}
           </div>
         </CardContent>
       </Card>
