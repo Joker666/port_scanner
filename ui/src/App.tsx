@@ -155,12 +155,14 @@ const PortScanner = () => {
           response.json().then((data) => {
             const formattedResults: Result[] = Object.entries(data).flatMap(
               ([ip, ports]) =>
-                (ports as number[]).map((port) => ({
-                  ip,
-                  port,
-                  status: "open",
-                  service: commonPorts[port] || "Unknown",
-                }))
+                Object.entries(ports as Record<string, string>).map(
+                  ([port, status]) => ({
+                    ip,
+                    port: parseInt(port),
+                    status: status as "open" | "filtered" | "closed",
+                    service: commonPorts[parseInt(port)] || "Unknown",
+                  })
+                )
             );
             setResults(formattedResults);
           });
