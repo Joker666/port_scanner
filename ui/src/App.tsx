@@ -93,6 +93,7 @@ const PortScanner = () => {
     setResults([]);
     setScanMethod(method);
   };
+
   const validateInput = () => {
     // IP validation for comma-separated values
     const ips = ipRange.split(",").map((ip) => ip.trim());
