@@ -7,9 +7,9 @@ app = Robyn(__file__)
 
 @app.get("/api/scan/tcp")
 def tcp_scan(request: Request):
-    ip_range = request.query_params.get("ips").split(",")
+    ip_range = [ip.strip() for ip in request.query_params.get("ips").split(",")]
 
-    # Convert port range string to array of integers
+    # Convert port range string to an array of integers
     port_input = request.query_params.get("ports")
     if "-" in port_input:
         start, end = map(int, port_input.split("-"))
