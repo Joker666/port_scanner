@@ -145,7 +145,12 @@ const PortScanner = () => {
       });
     }, 500);
 
-    fetch(`/api/scan/${scanMethod}?ips=${ipRange}&ports=${portRange}`)
+    const cleanedIpRange = ipRange
+      .split(",")
+      .map((ip) => ip.trim())
+      .join(",");
+
+    fetch(`/api/scan/${scanMethod}?ips=${cleanedIpRange}&ports=${portRange}`)
       .then((response) => {
         if (response.ok) {
           response.json().then((data) => {
