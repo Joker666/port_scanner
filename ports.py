@@ -43,7 +43,9 @@ def scan_ip_range(tracing_id, ip_range, port_range, protocol="tcp", concurrency=
 
         for ip, future in futures:
             port, status = future.result()
-            if status == "closed":
+            if protocol == "tcp" and status == "filtered":
+                continue
+            if protocol == "udp" and (status == "filtered" or status == "closed"):
                 continue
             open_ports_by_ip[ip][str(port)] = status
 
