@@ -116,34 +116,6 @@ const PortScanner = () => {
     setResults([]);
     setProgress(0);
 
-    fetch(`/api/scan/${scanMethod}`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        ips: ipRange,
-        ports: portRange,
-      }),
-    })
-      .then((response) => {
-        if (response.ok) {
-          response.json().then((data) => {
-            setResults(data);
-          });
-        } else {
-          setError("Error: Failed to scan ports");
-        }
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-        setError("Error: Failed to scan ports");
-      })
-      .finally(() => {
-        setProgress(100);
-        setScanning(false);
-      });
-
     // Simulate different results based on scan method
     const sampleResults = {
       tcp: [
@@ -173,13 +145,34 @@ const PortScanner = () => {
       });
     }, 500);
 
-    // Simulate scanning delay
-    setTimeout(() => {
-      clearInterval(progressInterval);
-      setProgress(100);
-      setResults(sampleResults[scanMethod]);
-      setScanning(false);
-    }, 3000);
+    fetch(`/api/scan/${scanMethod}?ips=${ipRange}&ports=${portRange}`)
+      .then((response) => {
+        if (response.ok) {
+          response.json().then((data) => {
+            const formattedResults = Object.entries(data).flatMap(
+              ([ip, ports]) =>
+                (ports as number[]).map((port) => ({
+                  ip,
+                  port,
+                  status: "open",
+                  service: commonPorts[port] || "Unknown",
+                }))
+            );
+            setResults(formattedResults);
+          });
+        } else {
+          setError("Error: Failed to scan ports");
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        setError("Error: Failed to scan ports");
+      })
+      .finally(() => {
+        setProgress(100);
+        setScanning(false);
+        clearInterval(progressInterval);
+      });
   };
 
   return (
