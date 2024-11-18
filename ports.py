@@ -1,20 +1,20 @@
 import socket
 from concurrent.futures import ThreadPoolExecutor
 
-from robyn import logger
-
 
 def scan_port(tracing_id, ip, port):
     """Scans a single port on a given IP and returns tuple of (port, status)."""
-    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-        s.settimeout(1)  # Timeout for each connection attempt
-        result = s.connect_ex((ip, port))
-        if result == 0:
-            logger.info(f"Tracing ID: {tracing_id} | IP: {ip} | Port {port} is open")
+    try:
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+            s.settimeout(1)  # Set timeout for the connection attempt
+            s.connect((ip, port))
             return port, "open"
-        else:
-            logger.info(f"Tracing ID: {tracing_id} | IP: {ip} | Port {port} is closed")
-            return port, "closed"
+    except socket.timeout:
+        return port, "filtered"
+    except ConnectionRefusedError:
+        return port, "closed"
+    except Exception as e:
+        return port, f"error: {e}"
 
 
 def scan_ip_range(tracing_id, ip_range, port_range, concurrency=10):
