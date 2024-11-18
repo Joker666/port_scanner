@@ -15,18 +15,18 @@ def scan_port(ip, port):
 
 
 def scan_ip_range(ip_range, port_range):
-    """Scans a range of IPs and ports and returns array of open ports."""
-    open_ports = []
+    """Scans a range of IPs and ports and returns dictionary of IPs with their open ports."""
+    open_ports_by_ip = {ip: [] for ip in ip_range}
     with ThreadPoolExecutor(max_workers=10) as executor:
         futures = []
         for ip in ip_range:
             for port in port_range:
                 future = executor.submit(scan_port, ip, port)
-                futures.append(future)
+                futures.append((ip, future))
 
-        for future in futures:
+        for ip, future in futures:
             result = future.result()
             if result:
-                open_ports.append(result)
+                open_ports_by_ip[ip].append(result)
 
-    return open_ports
+    return open_ports_by_ip
