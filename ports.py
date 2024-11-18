@@ -1,6 +1,8 @@
 import socket
 from concurrent.futures import ThreadPoolExecutor
 
+from robyn import logger
+
 
 def scan_port(tracing_id, ip, port):
     """Scans a single port on a given IP."""
@@ -8,10 +10,10 @@ def scan_port(tracing_id, ip, port):
         s.settimeout(1)  # Timeout for each connection attempt
         result = s.connect_ex((ip, port))
         if result == 0:
-            print(f"Tracing ID: {tracing_id} | IP: {ip} | Port {port} is open")
+            logger.info(f"Tracing ID: {tracing_id} | IP: {ip} | Port {port} is open")
             return port
         else:
-            print(f"Tracing ID: {tracing_id} | IP: {ip} | Port {port} is closed")
+            logger.info(f"Tracing ID: {tracing_id} | IP: {ip} | Port {port} is closed")
 
     return None
 

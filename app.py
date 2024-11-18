@@ -1,18 +1,22 @@
 import hashlib
 import time
 
-from robyn import Request, Robyn
+from robyn import Request, Robyn, logger
 
 import ports
 
 app = Robyn(__file__)
 
 
-@app.get("/api/scan/tcp")
-def tcp_scan(request: Request):
+@app.get("/api/scan/:method")
+def scan(request: Request):
     # Create tracing ID from request attributes
     tracing_id = create_request_hash(request)
     concurrency = int(request.query_params.get("concurrency"))
+    method = request.path_params.get("method")
+    logger.info(
+        f"Tracing ID: {tracing_id} | Method: {method} | Concurrency: {concurrency}"
+    )
 
     open_ports_by_ip = ports.scan_ip_range(
         tracing_id, get_ip_range(request), get_port_range(request), concurrency
