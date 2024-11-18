@@ -85,13 +85,15 @@ const PortScanner = () => {
     setResults([]);
     setScanMethod(method);
   };
-
   const validateInput = () => {
-    // Basic IP range validation
-    const ipPattern = /^(\d{1,3}\.){3}\d{1,3}(-(\d{1,3}\.){3}\d{1,3})?$/;
-    if (!ipPattern.test(ipRange)) {
+    // IP validation for comma-separated values
+    const ips = ipRange.split(",").map((ip) => ip.trim());
+    const ipPattern = /^(\d{1,3}\.){3}\d{1,3}$/;
+
+    const validIps = ips.every((ip) => ipPattern.test(ip));
+    if (!validIps) {
       setError(
-        "Invalid IP range format. Use format: 192.168.1.1 or 192.168.1.1-192.168.1.255"
+        "Invalid IP format. Use comma-separated IPs: 192.168.1.1, 192.168.1.2"
       );
       return false;
     }
@@ -113,6 +115,14 @@ const PortScanner = () => {
     setError("");
     setResults([]);
     setProgress(0);
+
+    fetch(`/api/scan/${scanMethod}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({}),
+    });
 
     // Simulate different results based on scan method
     const sampleResults = {
@@ -182,7 +192,7 @@ const PortScanner = () => {
               <input
                 type="text"
                 className="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500"
-                placeholder="e.g., 192.168.1.1 or 192.168.1.1-192.168.1.255"
+                placeholder="e.g., 192.168.1.1, 192.168.1.2"
                 value={ipRange}
                 onChange={(e) => setIpRange(e.target.value)}
               />
