@@ -3,6 +3,13 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { AlertTriangle, Info, Loader, Server, Shield } from "lucide-react";
 import { useState } from "react";
 
+interface Result {
+  ip: string;
+  port: number;
+  status: "open" | "filtered" | "closed";
+  service: string;
+}
+
 // Spinner Component
 const LoadingSpinner = () => (
   <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -38,7 +45,7 @@ const PortScanner = () => {
   const [scanMethod, setScanMethod] = useState("tcp");
   const [scanning, setScanning] = useState(false);
   const [concurrency, setConcurrency] = useState<number>(10);
-  const [results, setResults] = useState([]);
+  const [results, setResults] = useState<Result[]>([]);
   const [error, setError] = useState("");
   const [showMethodInfo, setShowMethodInfo] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -63,7 +70,7 @@ const PortScanner = () => {
     };
 
   // Common service port mappings
-  const commonPorts = {
+  const commonPorts: { [key: number]: string } = {
     20: "FTP (Data)",
     21: "FTP (Control)",
     22: "SSH",
@@ -163,7 +170,7 @@ const PortScanner = () => {
       .then((response) => {
         if (response.ok) {
           response.json().then((data) => {
-            const formattedResults = Object.entries(data).flatMap(
+            const formattedResults: Result[] = Object.entries(data).flatMap(
               ([ip, ports]) =>
                 (ports as number[]).map((port) => ({
                   ip,
