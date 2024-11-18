@@ -121,8 +121,28 @@ const PortScanner = () => {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({}),
-    });
+      body: JSON.stringify({
+        ips: ipRange,
+        ports: portRange,
+      }),
+    })
+      .then((response) => {
+        if (response.ok) {
+          response.json().then((data) => {
+            setResults(data);
+          });
+        } else {
+          setError("Error: Failed to scan ports");
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        setError("Error: Failed to scan ports");
+      })
+      .finally(() => {
+        setProgress(100);
+        setScanning(false);
+      });
 
     // Simulate different results based on scan method
     const sampleResults = {
