@@ -3,10 +3,18 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { AlertTriangle, Info, Loader, Server, Shield } from "lucide-react";
 import { useState } from "react";
 
+type Status =
+  | "open"
+  | "filtered"
+  | "closed"
+  | "unfiltered"
+  | "open|filtered"
+  | "closed|filtered";
+
 interface Result {
   ip: string;
   port: number;
-  status: "open" | "filtered" | "closed";
+  status: Status;
   service: string;
 }
 
@@ -159,7 +167,7 @@ const PortScanner = () => {
                   ([port, status]) => ({
                     ip,
                     port: parseInt(port),
-                    status: status as "open" | "filtered" | "closed",
+                    status: status as Status,
                     service: commonPorts[parseInt(port)] || "Unknown",
                   })
                 )
