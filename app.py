@@ -19,7 +19,7 @@ def scan(request: Request):
     )
 
     open_ports_by_ip = ports.scan_ip_range(
-        tracing_id, get_ip_range(request), get_port_range(request), concurrency
+        tracing_id, get_ip_range(request), get_port_range(request), method, concurrency
     )
     return open_ports_by_ip
 
