@@ -3,9 +3,9 @@ from robyn import Robyn
 app = Robyn(__file__)
 
 
-# @app.get("/")
-# def index():
-#     return "Hello World!"
+@app.post("/api/scan/tcp")
+def index():
+    return "Hello World!"
 
 
 if __name__ == "__main__":
