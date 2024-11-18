@@ -37,6 +37,7 @@ const PortScanner = () => {
   const [portRange, setPortRange] = useState("");
   const [scanMethod, setScanMethod] = useState("tcp");
   const [scanning, setScanning] = useState(false);
+  const [concurrency, setConcurrency] = useState<number>(10);
   const [results, setResults] = useState([]);
   const [error, setError] = useState("");
   const [showMethodInfo, setShowMethodInfo] = useState(false);
@@ -105,6 +106,12 @@ const PortScanner = () => {
       return false;
     }
 
+    // Concurrency validation
+    if (concurrency < 10 || concurrency > 100) {
+      setError("Concurrency must be between 10 and 100");
+      return false;
+    }
+
     return true;
   };
 
@@ -150,7 +157,9 @@ const PortScanner = () => {
       .map((ip) => ip.trim())
       .join(",");
 
-    fetch(`/api/scan/${scanMethod}?ips=${cleanedIpRange}&ports=${portRange}`)
+    fetch(
+      `/api/scan/${scanMethod}?ips=${cleanedIpRange}&ports=${portRange}&concurrency=${concurrency}`
+    )
       .then((response) => {
         if (response.ok) {
           response.json().then((data) => {
@@ -263,6 +272,25 @@ const PortScanner = () => {
                 ))}
               </div>
             )}
+
+            <div>
+              <label
+                htmlFor="concurrency"
+                className="block text-sm font-medium mb-1"
+              >
+                Concurrency
+              </label>
+              <input
+                className="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500"
+                id="concurrency"
+                type="number"
+                value={concurrency}
+                onChange={(e) => setConcurrency(Number(e.target.value))}
+                min={10}
+                max={100}
+                placeholder="Enter concurrency (10-100)"
+              />
+            </div>
 
             {error && (
               <Alert variant="destructive">

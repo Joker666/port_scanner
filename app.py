@@ -12,9 +12,10 @@ app = Robyn(__file__)
 def tcp_scan(request: Request):
     # Create tracing ID from request attributes
     tracing_id = create_request_hash(request)
+    concurrency = int(request.query_params.get("concurrency"))
 
     open_ports_by_ip = ports.scan_ip_range(
-        tracing_id, get_ip_range(request), get_port_range(request)
+        tracing_id, get_ip_range(request), get_port_range(request), concurrency
     )
     return open_ports_by_ip
 

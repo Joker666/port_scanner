@@ -16,10 +16,10 @@ def scan_port(tracing_id, ip, port):
     return None
 
 
-def scan_ip_range(tracing_id, ip_range, port_range):
+def scan_ip_range(tracing_id, ip_range, port_range, concurrency=10):
     """Scans a range of IPs and ports and returns dictionary of IPs with their open ports."""
     open_ports_by_ip = {ip: [] for ip in ip_range}
-    with ThreadPoolExecutor(max_workers=100) as executor:
+    with ThreadPoolExecutor(max_workers=concurrency) as executor:
         futures = []
         for ip in ip_range:
             for port in port_range:
