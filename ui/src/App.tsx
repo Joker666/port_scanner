@@ -83,6 +83,7 @@ const PortScanner = () => {
     setResults([]);
     setProgress(0);
     setResults([]);
+    setScanMethod(method);
   };
 
   const validateInput = () => {
