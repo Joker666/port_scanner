@@ -130,24 +130,6 @@ const PortScanner = () => {
     setResults([]);
     setProgress(0);
 
-    // Simulate different results based on scan method
-    const sampleResults = {
-      tcp: [
-        { ip: "192.168.1.1", port: 80, status: "open", service: "HTTP" },
-        { ip: "192.168.1.1", port: 443, status: "open", service: "HTTPS" },
-        { ip: "192.168.1.1", port: 22, status: "open", service: "SSH" },
-      ],
-      udp: [
-        { ip: "192.168.1.1", port: 53, status: "open", service: "DNS" },
-        { ip: "192.168.1.1", port: 161, status: "open", service: "SNMP" },
-      ],
-      syn: [
-        { ip: "192.168.1.1", port: 80, status: "open", service: "HTTP" },
-        { ip: "192.168.1.1", port: 443, status: "open", service: "HTTPS" },
-        { ip: "192.168.1.1", port: 22, status: "filtered", service: "SSH" },
-      ],
-    };
-
     // Simulate scanning progress
     const progressInterval = setInterval(() => {
       setProgress((prev) => {
