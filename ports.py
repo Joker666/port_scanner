@@ -1,7 +1,8 @@
 import socket
 from concurrent.futures import ThreadPoolExecutor
 
-from scapy.all import *
+from scapy.layers.inet import IP, TCP
+from scapy.sendrecv import send, sr1
 
 
 def scan_port(tracing_id, ip, port, protocol="tcp"):
