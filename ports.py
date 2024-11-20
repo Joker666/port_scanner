@@ -1,6 +1,8 @@
 import socket
 from concurrent.futures import ThreadPoolExecutor
 
+from scapy.all import *
+
 
 def scan_port(tracing_id, ip, port, protocol="tcp"):
     """Scans a single port on a given IP and returns tuple of (port, status)."""
@@ -16,6 +18,21 @@ def scan_port(tracing_id, ip, port, protocol="tcp"):
             return port, "closed"
         except Exception as e:
             return port, f"error: {e}"
+    if protocol == "syn":
+        syn_packet = IP(dst=ip) / TCP(dport=port, flags="S")
+        response = sr1(syn_packet, timeout=1, verbose=0)
+        if response:
+            if response.haslayer(TCP) and response.getlayer(TCP).flags == 0x12:
+                # Port is open, since we received SYN-ACK
+                # Send RST to close the connection gracefully
+                rst_packet = IP(dst=ip) / TCP(dport=port, flags="R")
+                send(rst_packet, verbose=0)
+
+                return port, "open"
+            elif response.haslayer(TCP) and response.getlayer(TCP).flags == 0x14:
+                return port, "closed"
+        else:
+            return port, "filtered"
     else:  # UDP scan
         try:
             with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
