@@ -2,6 +2,9 @@
 
 A simple port scanner written in Python.
 
+<img width="878" alt="Screenshot 2024-11-21 at 4 47 17 PM" src="https://github.com/user-attachments/assets/593dce12-d449-47d3-b2fe-590e930c8fd9">
+
+
 ### Prerequisites
 
 - Python 3.12.x
