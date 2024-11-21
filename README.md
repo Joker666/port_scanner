@@ -11,7 +11,7 @@ A simple port scanner written in Python.
 ### Usage
 
 1. Run `build.sh` to build the UI.
-2. Run `run.sh` to start the application.
+2. Run `sudo run.sh` to start the application.
 3. Open `http://localhost:8080` in your browser.
 
 ### License
