@@ -2,7 +2,7 @@
 
 A simple port scanner written in Python.
 
-<img width="878" alt="Screenshot 2024-11-21 at 4 47 17 PM" src="https://github.com/user-attachments/assets/593dce12-d449-47d3-b2fe-590e930c8fd9">
+<img width="878" alt="Screenshot 2024-11-23 at 2 35 01 PM" src="https://github.com/user-attachments/assets/526db47c-259a-439d-b4e3-112d526c60e5">
 
 
 ### Prerequisites
