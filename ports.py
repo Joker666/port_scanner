@@ -49,6 +49,14 @@ def scan_port(tracing_id, ip, port, protocol="tcp"):
             return port, f"error: {e}"
 
 
+def get_service_name(port, proto):
+    try:
+        name = socket.getservbyport(int(port), proto)
+    except OSError:
+        return None
+    return name
+
+
 def scan_ip_range(tracing_id, ip_range, port_range, protocol="tcp", concurrency=10):
     """Scans a range of IPs and ports and returns dictionary of IPs with their port:status mappings."""
     open_ports_by_ip = {ip: {} for ip in ip_range}
@@ -65,6 +73,13 @@ def scan_ip_range(tracing_id, ip_range, port_range, protocol="tcp", concurrency=
                 continue
             if (protocol == "udp" or protocol == "syn") and (status == "filtered" or status == "closed"):
                 continue
-            open_ports_by_ip[ip][str(port)] = status
+
+            # Get service name for the port
+            service_name = get_service_name(port, protocol)
+            # Store both service name and status
+            open_ports_by_ip[ip][str(port)] = {
+                "service": service_name,
+                "status": status
+            }
 
     return open_ports_by_ip
