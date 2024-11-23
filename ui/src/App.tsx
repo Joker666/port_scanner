@@ -77,27 +77,6 @@ const PortScanner = () => {
       },
     };
 
-  // Common service port mappings
-  const commonPorts: { [key: number]: string } = {
-    20: "FTP (Data)",
-    21: "FTP (Control)",
-    22: "SSH",
-    23: "Telnet",
-    25: "SMTP",
-    53: "DNS",
-    80: "HTTP",
-    110: "POP3",
-    135: "MSRPC",
-    137: "NetBIOS:Name",
-    139: "NetBIOS:Session",
-    143: "IMAP",
-    443: "HTTPS",
-    445: "MICROSOFT-DS",
-    3306: "MySQL",
-    5432: "PostgreSQL",
-    8080: "HTTP Alternate",
-  };
-
   const updateScanMethod = (method: string) => {
     setError("");
     setResults([]);
@@ -167,14 +146,14 @@ const PortScanner = () => {
           response.json().then((data) => {
             const formattedResults: Result[] = Object.entries(data).flatMap(
               ([ip, ports]) =>
-                Object.entries(ports as Record<string, string>).map(
-                  ([port, status]) => ({
-                    ip,
-                    port: parseInt(port),
-                    status: status as Status,
-                    service: commonPorts[parseInt(port)] || "Unknown",
-                  })
-                )
+                Object.entries(
+                  ports as Record<string, { service: string; status: string }>
+                ).map(([port, portInfo]) => ({
+                  ip,
+                  port: parseInt(port),
+                  status: portInfo.status as Status,
+                  service: portInfo.service.toUpperCase() || "Unknown",
+                }))
             );
             setResults(formattedResults);
           });
