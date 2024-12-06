@@ -1,3 +1,4 @@
-port=8080
-build_cmd=./build.sh
-start_cmd=./run.sh
+port: 8080
+build_cmd: ./build.sh
+start_cmd: ./run.sh
+providers: ["...", "node"]

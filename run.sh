@@ -2,5 +2,4 @@
 
 set -e
 
-cd ui && pnpm run build
-cd .. && python app.py
+python app.py
