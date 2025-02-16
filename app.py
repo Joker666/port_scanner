@@ -8,6 +8,11 @@ import ports
 app = Robyn(__file__)
 
 
+@app.get("/up")
+def index(request: Request):
+    return "Hello, world!"
+
+
 @app.get("/api/scan/:method")
 def scan(request: Request):
     # Create tracing ID from request attributes
